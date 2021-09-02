@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "eu.pb4.playerdata.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "PlayerManagerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

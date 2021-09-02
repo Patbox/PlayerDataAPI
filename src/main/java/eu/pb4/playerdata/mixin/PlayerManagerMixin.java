@@ -1,0 +1,81 @@
+package eu.pb4.playerdata.mixin;
+
+import eu.pb4.playerdata.PMI;
+import eu.pb4.playerdata.api.PlayerDataApi;
+import eu.pb4.playerdata.api.storage.PlayerDataStorage;
+import net.minecraft.network.ClientConnection;
+import net.minecraft.server.PlayerManager;
+import net.minecraft.server.network.ServerPlayerEntity;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+@Mixin(value = PlayerManager.class, priority = 500)
+public class PlayerManagerMixin implements PMI {
+    @Unique
+    private final Map<UUID, Map<PlayerDataStorage<Object>, Object>> playerDataMap = new HashMap<>();
+
+    @Inject(method = "onPlayerConnect", at = @At("HEAD"))
+    private void loadData(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
+        Map<PlayerDataStorage<Object>, Object> map = new HashMap<>();
+        for (PlayerDataStorage<?> storage : PlayerDataApi.getDataStorageSet()) {
+            try {
+                map.put(((PlayerDataStorage<Object>) storage), storage.load(player));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        this.playerDataMap.put(player.getUuid(), map);
+    }
+
+    @Inject(method = "savePlayerData", at = @At("HEAD"))
+    private void saveData(ServerPlayerEntity player, CallbackInfo ci) {
+        for (var entry : this.playerDataMap.get(player.getUuid()).entrySet()) {
+            try {
+                entry.getKey().save(player, entry.getValue());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    @Inject(method = "remove", at = @At("TAIL"))
+    private void dontHoldOfflineData(ServerPlayerEntity player, CallbackInfo ci) {
+        this.playerDataMap.remove(player.getUuid());
+    }
+
+    @Override
+    public Map<PlayerDataStorage<Object>, Object> pda_getStorageMap(UUID uuid) {
+        return this.playerDataMap.get(uuid);
+    }
+
+    @Override
+    public <T> T pda_getStorageValue(UUID uuid, PlayerDataStorage<T> storage) {
+        var map = this.playerDataMap.get(uuid);
+        if (map != null) {
+            return (T) map.get(storage);
+        }
+
+        return null;
+    }
+
+    @Override
+    public <T> void pda_setStorageValue(UUID uuid, PlayerDataStorage<T> storage, T value) {
+        var map = this.playerDataMap.get(uuid);
+        if (map != null) {
+            map.put((PlayerDataStorage<Object>) storage, value);
+        }
+    }
+
+    @Override
+    public boolean pda_isStored(UUID uuid) {
+        return this.playerDataMap.containsKey(uuid);
+    }
+}
