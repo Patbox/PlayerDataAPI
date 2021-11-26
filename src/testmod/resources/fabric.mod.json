@@ -23,7 +23,6 @@
     ]
   },
   "depends": {
-    "minecraft": "*",
-    "java": ">=16"
+    "minecraft": "*"
   }
 }
