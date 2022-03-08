@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-	modImplementation include("eu.pb4:sidebar-api:[TAG]")
+	modImplementation include("eu.pb4:player-data-api:[TAG]")
 }
 ```
 
