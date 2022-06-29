@@ -1,7 +1,7 @@
 package eu.pb4.playerdata.api;
 
 import com.google.common.collect.ImmutableSet;
-import eu.pb4.playerdata.PMI;
+import eu.pb4.playerdata.impl.PMI;
 import eu.pb4.playerdata.api.storage.NbtDataStorage;
 import eu.pb4.playerdata.api.storage.PlayerDataStorage;
 import net.minecraft.nbt.NbtCompound;

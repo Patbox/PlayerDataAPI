@@ -2,7 +2,7 @@ package eu.pb4.playerdata.api.storage;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import eu.pb4.playerdata.PlayerDataMod;
+import eu.pb4.playerdata.impl.PMI;
 import eu.pb4.playerdata.api.PlayerDataApi;
 import net.minecraft.server.MinecraftServer;
 import org.apache.commons.io.IOUtils;
@@ -35,7 +35,7 @@ public record JsonDataStorage<T>(String path, Class<T> clazz, Gson gson) impleme
 
             return true;
         } catch (Exception e) {
-            PlayerDataMod.LOGGER.error(String.format("Couldn't save player data of %s for path %s", player, this.path));
+            PMI.LOGGER.error(String.format("Couldn't save player data of %s for path %s", player, this.path));
             e.printStackTrace();
             return false;
         }
@@ -52,7 +52,7 @@ public record JsonDataStorage<T>(String path, Class<T> clazz, Gson gson) impleme
             String json = IOUtils.toString(new InputStreamReader(new FileInputStream(path.toFile()), StandardCharsets.UTF_8));
             return GSON.fromJson(json, this.clazz);
         } catch (Exception e) {
-            PlayerDataMod.LOGGER.error(String.format("Couldn't load player data of %s for path %s", player, this.path));
+            PMI.LOGGER.error(String.format("Couldn't load player data of %s for path %s", player, this.path));
             e.printStackTrace();
             return null;
         }

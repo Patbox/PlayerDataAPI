@@ -1,7 +1,7 @@
 package eu.pb4.playerdata.api.storage;
 
-import eu.pb4.playerdata.PlayerDataMod;
 import eu.pb4.playerdata.api.PlayerDataApi;
+import eu.pb4.playerdata.impl.PMI;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.MinecraftServer;
@@ -23,7 +23,7 @@ public record NbtDataStorage(String path) implements PlayerDataStorage<NbtCompou
             NbtIo.writeCompressed(settings, path.resolve(this.path + ".dat").toFile());
             return true;
         } catch (Exception e) {
-            PlayerDataMod.LOGGER.error(String.format("Couldn't save player data of %s for path %s", player, this.path));
+            PMI.LOGGER.error(String.format("Couldn't save player data of %s for path %s", player, this.path));
             e.printStackTrace();
             return false;
         }
@@ -39,7 +39,7 @@ public record NbtDataStorage(String path) implements PlayerDataStorage<NbtCompou
 
             return NbtIo.readCompressed(path.toFile());
         } catch (Exception e) {
-            PlayerDataMod.LOGGER.error(String.format("Couldn't load player data of %s for path %s", player, this.path));
+            PMI.LOGGER.error(String.format("Couldn't load player data of %s for path %s", player, this.path));
             e.printStackTrace();
             return null;
         }

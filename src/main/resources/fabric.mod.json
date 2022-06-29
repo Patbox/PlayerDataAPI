@@ -15,9 +15,7 @@
   "license": "LGPLv3",
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "eu.pb4.playerdata.PlayerDataMod"
-    ]
+
   },
   "mixins": [
     "playerdataapi.mixins.json"

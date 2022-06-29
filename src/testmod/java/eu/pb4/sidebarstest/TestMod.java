@@ -5,13 +5,13 @@ import eu.pb4.playerdata.api.PlayerDataApi;
 import eu.pb4.playerdata.api.storage.NbtDataStorage;
 import eu.pb4.playerdata.api.storage.PlayerDataStorage;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import static net.minecraft.server.command.CommandManager.literal;
@@ -38,7 +38,7 @@ public class TestMod implements ModInitializer {
         try {
             ServerPlayerEntity player = objectCommandContext.getSource().getPlayer();
             NbtCompound compound = PlayerDataApi.getCustomDataFor(player, DATA_STORAGE);
-            player.sendMessage(new LiteralText(compound.toString()), false);
+            player.sendMessage(Text.literal(compound.toString()), false);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -60,7 +60,7 @@ public class TestMod implements ModInitializer {
         try {
             ServerPlayerEntity player = objectCommandContext.getSource().getPlayer();
             NbtElement element = PlayerDataApi.getGlobalDataFor(player, new Identifier("test"));
-            player.sendMessage(new LiteralText(element.toString()), false);
+            player.sendMessage(Text.literal(element.toString()), false);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,7 +70,7 @@ public class TestMod implements ModInitializer {
     public void onInitialize() {
         PlayerDataApi.register(DATA_STORAGE);
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(
                     literal("test").executes(TestMod::test)
             );
