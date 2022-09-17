@@ -30,7 +30,7 @@ public record JsonDataStorage<T>(String path, Class<T> clazz, Gson gson) impleme
             path.toFile().mkdirs();
 
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path.resolve(this.path + ".json").toFile()), StandardCharsets.UTF_8));
-            writer.write(GSON.toJson(settings));
+            writer.write(this.gson.toJson(settings));
             writer.close();
 
             return true;
@@ -50,7 +50,7 @@ public record JsonDataStorage<T>(String path, Class<T> clazz, Gson gson) impleme
             }
 
             String json = IOUtils.toString(new InputStreamReader(new FileInputStream(path.toFile()), StandardCharsets.UTF_8));
-            return GSON.fromJson(json, this.clazz);
+            return this.gson.fromJson(json, this.clazz);
         } catch (Exception e) {
             PMI.LOGGER.error(String.format("Couldn't load player data of %s for path %s", player, this.path));
             e.printStackTrace();
