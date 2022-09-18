@@ -1,7 +1,7 @@
 package eu.pb4.playerdata.api.storage;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import eu.pb4.playerdata.impl.BaseGson;
 import eu.pb4.playerdata.impl.PMI;
 import eu.pb4.playerdata.api.PlayerDataApi;
 import net.minecraft.server.MinecraftServer;
@@ -13,10 +13,8 @@ import java.nio.file.Path;
 import java.util.UUID;
 
 public record JsonDataStorage<T>(String path, Class<T> clazz, Gson gson) implements PlayerDataStorage<T> {
-    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().setLenient().create();
-
     public JsonDataStorage(String path, Class<T> clazz) {
-        this(path, clazz, GSON);
+        this(path, clazz, BaseGson.GSON);
     }
 
     @Override

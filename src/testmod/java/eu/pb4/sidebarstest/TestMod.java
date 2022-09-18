@@ -2,7 +2,7 @@ package eu.pb4.sidebarstest;
 
 import com.mojang.brigadier.context.CommandContext;
 import eu.pb4.playerdata.api.PlayerDataApi;
-import eu.pb4.playerdata.api.storage.NbtDataStorage;
+import eu.pb4.playerdata.api.storage.JsonDataStorage;
 import eu.pb4.playerdata.api.storage.PlayerDataStorage;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -17,15 +17,20 @@ import net.minecraft.util.Identifier;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class TestMod implements ModInitializer {
-    public static final PlayerDataStorage<NbtCompound> DATA_STORAGE = new NbtDataStorage("test");
+    public static final PlayerDataStorage<TestClass> DATA_STORAGE = new JsonDataStorage<>("test_gson", TestClass.class);
 
     private static int test(CommandContext<ServerCommandSource> objectCommandContext) {
         try {
             ServerPlayerEntity player = objectCommandContext.getSource().getPlayer();
 
-            NbtCompound nbtCompound = new NbtCompound();
-            nbtCompound.putString("test", "Hello Custom World " + Math.random() * 100);
-            PlayerDataApi.setCustomDataFor(player, DATA_STORAGE, nbtCompound);
+            var testObj = new TestClass();
+            testObj.testString = "Hello Custom World " + Math.random() * 100;
+            testObj.position = player.getPos();
+            testObj.itemStack = player.getMainHandStack();
+            testObj.item = player.getMainHandStack().getItem();
+            testObj.text = player.getDisplayName();
+            testObj.id = new Identifier("test:hello");
+            PlayerDataApi.setCustomDataFor(player, DATA_STORAGE, testObj);
 
 
         } catch (Exception e) {
@@ -37,8 +42,13 @@ public class TestMod implements ModInitializer {
     private static int test2(CommandContext<ServerCommandSource> objectCommandContext) {
         try {
             ServerPlayerEntity player = objectCommandContext.getSource().getPlayer();
-            NbtCompound compound = PlayerDataApi.getCustomDataFor(player, DATA_STORAGE);
-            player.sendMessage(Text.literal(compound.toString()), false);
+            var data = PlayerDataApi.getCustomDataFor(player, DATA_STORAGE);
+            player.sendMessage(Text.literal(data.testString), false);
+            player.sendMessage(Text.literal(data.position.toString()), false);
+            player.sendMessage(Text.literal(data.itemStack.toString()), false);
+            player.sendMessage(Text.literal(data.item.toString()), false);
+            player.sendMessage(data.text, false);
+            player.sendMessage(Text.literal(data.id.toString()), false);
 
         } catch (Exception e) {
             e.printStackTrace();
