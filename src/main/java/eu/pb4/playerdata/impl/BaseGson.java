@@ -17,6 +17,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.Registries;
 import net.minecraft.util.registry.Registry;
 
 import java.lang.reflect.Type;
@@ -25,13 +26,13 @@ public class BaseGson {
     public static final Gson GSON = new GsonBuilder().disableHtmlEscaping()
             .registerTypeHierarchyAdapter(Identifier.class, new Identifier.Serializer())
 
-            .registerTypeHierarchyAdapter(Item.class, new RegistrySerializer<>(Registry.ITEM))
-            .registerTypeHierarchyAdapter(Block.class, new RegistrySerializer<>(Registry.BLOCK))
-            .registerTypeHierarchyAdapter(Enchantment.class, new RegistrySerializer<>(Registry.ENCHANTMENT))
-            .registerTypeHierarchyAdapter(SoundEvent.class, new RegistrySerializer<>(Registry.SOUND_EVENT))
-            .registerTypeHierarchyAdapter(StatusEffect.class, new RegistrySerializer<>(Registry.STATUS_EFFECT))
-            .registerTypeHierarchyAdapter(EntityType.class, new RegistrySerializer<>(Registry.ENTITY_TYPE))
-            .registerTypeHierarchyAdapter(BlockEntityType.class, new RegistrySerializer<>(Registry.BLOCK_ENTITY_TYPE))
+            .registerTypeHierarchyAdapter(Item.class, new RegistrySerializer<>(Registries.ITEM))
+            .registerTypeHierarchyAdapter(Block.class, new RegistrySerializer<>(Registries.BLOCK))
+            .registerTypeHierarchyAdapter(Enchantment.class, new RegistrySerializer<>(Registries.ENCHANTMENT))
+            .registerTypeHierarchyAdapter(SoundEvent.class, new RegistrySerializer<>(Registries.SOUND_EVENT))
+            .registerTypeHierarchyAdapter(StatusEffect.class, new RegistrySerializer<>(Registries.STATUS_EFFECT))
+            .registerTypeHierarchyAdapter(EntityType.class, new RegistrySerializer<>(Registries.ENTITY_TYPE))
+            .registerTypeHierarchyAdapter(BlockEntityType.class, new RegistrySerializer<>(Registries.BLOCK_ENTITY_TYPE))
 
             .registerTypeHierarchyAdapter(Text.class, new Text.Serializer())
             .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
