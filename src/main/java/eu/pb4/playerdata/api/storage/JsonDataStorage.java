@@ -1,6 +1,7 @@
 package eu.pb4.playerdata.api.storage;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import eu.pb4.playerdata.impl.BaseGson;
 import eu.pb4.playerdata.impl.PMI;
 import eu.pb4.playerdata.api.PlayerDataApi;
@@ -15,6 +16,10 @@ import java.util.UUID;
 public record JsonDataStorage<T>(String path, Class<T> clazz, Gson gson) implements PlayerDataStorage<T> {
     public JsonDataStorage(String path, Class<T> clazz) {
         this(path, clazz, BaseGson.GSON);
+    }
+
+    public static GsonBuilder createGsonBuilder() {
+        return BaseGson.createBuilder();
     }
 
     @Override

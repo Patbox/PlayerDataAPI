@@ -6,6 +6,7 @@ import eu.pb4.playerdata.api.storage.PlayerDataStorage;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.PlayerManager;
+import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -22,7 +23,7 @@ public class PlayerManagerMixin implements PMI {
     private final Map<UUID, Map<PlayerDataStorage<Object>, Object>> pda_playerDataMap = new Object2ObjectOpenHashMap<>();
 
     @Inject(method = "onPlayerConnect", at = @At("HEAD"))
-    private void loadData(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
+    private void loadData(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
         var map = new Object2ObjectOpenHashMap<PlayerDataStorage<Object>, Object>();
         for (PlayerDataStorage<?> storage : PlayerDataApi.getDataStorageSet()) {
             try {
