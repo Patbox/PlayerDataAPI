@@ -73,10 +73,8 @@ public class BaseGson {
                 .registerTypeHierarchyAdapter(PositionSourceType.class, new RegistrySerializer<>(Registries.POSITION_SOURCE_TYPE))
                 .registerTypeHierarchyAdapter(RuleTestType.class, new RegistrySerializer<>(Registries.RULE_TEST))
                 .registerTypeHierarchyAdapter(RuleBlockEntityModifier.class, new RegistrySerializer<>(Registries.RULE_BLOCK_ENTITY_MODIFIER))
-
                 .registerTypeHierarchyAdapter(Text.class, new Text.Serializer())
-                .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
-
+                .registerTypeHierarchyAdapter(Style.class, new CodecSerializer<>(Style.Codecs.CODEC))
                 .registerTypeHierarchyAdapter(ItemStack.class, new CodecSerializer<>(ItemStack.CODEC))
                 .registerTypeHierarchyAdapter(BlockPos.class, new CodecSerializer<>(BlockPos.CODEC))
                 .registerTypeHierarchyAdapter(Vec3d.class, new CodecSerializer<>(Vec3d.CODEC))
