@@ -86,9 +86,7 @@ public class BaseGson {
                 .registerTypeHierarchyAdapter(AxisAngle4f.class, new CodecSerializer<>(Codecs.AXIS_ANGLE4F))
                 .registerTypeHierarchyAdapter(Matrix4f.class, new CodecSerializer<>(Codecs.MATRIX4F))
                 .registerTypeHierarchyAdapter(BitSet.class, new CodecSerializer<>(Codecs.BIT_SET))
-                .registerTypeHierarchyAdapter(GameProfile.class, new CodecSerializer<>(Codecs.GAME_PROFILE_WITH_PROPERTIES))
-
-                ;
+                .registerTypeHierarchyAdapter(GameProfile.class, new CodecSerializer<>(Codecs.GAME_PROFILE_WITH_PROPERTIES));
     }
 
     private record RegistrySerializer<T>(Registry<T> registry) implements JsonSerializer<T>, JsonDeserializer<T> {
