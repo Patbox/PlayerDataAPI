@@ -1,20 +1,20 @@
 package eu.pb4.playerdata.api.storage;
 
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import eu.pb4.playerdata.api.PlayerDataApi;
 import eu.pb4.playerdata.impl.PMI;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtTagSizeTracker;
+import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
 
-public record NbtDataStorage(String path) implements PlayerDataStorage<NbtCompound> {
+public record NbtCodecDataStorage<T>(String path, Codec<T> codec) implements PlayerDataStorage<T> {
 
     @Override
-    public boolean save(MinecraftServer server, UUID player, NbtCompound settings) {
+    public boolean save(MinecraftServer server, UUID player, T settings) {
         Path path = PlayerDataApi.getPathFor(server, player);
 
         if (settings == null) {
@@ -27,7 +27,17 @@ public record NbtDataStorage(String path) implements PlayerDataStorage<NbtCompou
 
         try {
             Files.createDirectories(path);
-            NbtIo.writeCompressed(settings, path.resolve(this.path + ".dat"));
+
+            NbtCompound out;
+            var value = this.codec.encodeStart(NbtOps.INSTANCE, settings).result().get();
+            if (value instanceof NbtCompound compound) {
+                out = compound;
+            } else {
+                out = new NbtCompound();
+                out.put("", value);
+            }
+
+            NbtIo.writeCompressed(out, path.resolve(this.path + ".dat"));
             return true;
         } catch (Exception e) {
             PMI.LOGGER.error(String.format("Couldn't save player data of %s for path %s", player, this.path));
@@ -37,14 +47,21 @@ public record NbtDataStorage(String path) implements PlayerDataStorage<NbtCompou
     }
 
     @Override
-    public NbtCompound load(MinecraftServer server, UUID player) {
+    public T load(MinecraftServer server, UUID player) {
         try {
             Path path = PlayerDataApi.getPathFor(server, player).resolve(this.path + ".dat");
             if (!Files.exists(path)) {
                 return null;
             }
+            var nbt = NbtIo.readCompressed(path, NbtTagSizeTracker.ofUnlimitedBytes());
+            NbtElement element;
+            if (nbt.contains("")) {
+                element = nbt.get("");
+            } else {
+                element = nbt;
+            }
 
-            return NbtIo.readCompressed(path, NbtTagSizeTracker.ofUnlimitedBytes());
+            return this.codec.decode(NbtOps.INSTANCE, element).result().map(Pair::getFirst).orElse(null);
         } catch (Exception e) {
             PMI.LOGGER.error(String.format("Couldn't load player data of %s for path %s", player, this.path));
             e.printStackTrace();
