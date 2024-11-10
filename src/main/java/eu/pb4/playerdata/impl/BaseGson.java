@@ -85,9 +85,9 @@ public class BaseGson {
                 .registerTypeHierarchyAdapter(EntityPredicate.class, new CodecSerializer<>(EntityPredicate.CODEC))
                 .registerTypeHierarchyAdapter(AffineTransformation.class, new CodecSerializer<>(AffineTransformation.CODEC))
                 .registerTypeHierarchyAdapter(Brightness.class, new CodecSerializer<>(Brightness.CODEC))
-                .registerTypeHierarchyAdapter(Quaternionf.class, new CodecSerializer<>(Codecs.QUATERNIONF))
-                .registerTypeHierarchyAdapter(AxisAngle4f.class, new CodecSerializer<>(Codecs.AXIS_ANGLE4F))
-                .registerTypeHierarchyAdapter(Matrix4f.class, new CodecSerializer<>(Codecs.MATRIX4F))
+                .registerTypeHierarchyAdapter(Quaternionf.class, new CodecSerializer<>(Codecs.QUATERNION_F))
+                .registerTypeHierarchyAdapter(AxisAngle4f.class, new CodecSerializer<>(Codecs.AXIS_ANGLE_4F))
+                .registerTypeHierarchyAdapter(Matrix4f.class, new CodecSerializer<>(Codecs.MATRIX_4F))
                 .registerTypeHierarchyAdapter(BitSet.class, new CodecSerializer<>(Codecs.BIT_SET))
                 .registerTypeHierarchyAdapter(GameProfile.class, new CodecSerializer<>(Codecs.GAME_PROFILE_WITH_PROPERTIES))
 
