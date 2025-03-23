@@ -54,8 +54,6 @@ public class BaseGson {
 
     public static GsonBuilder createBuilder() {
         return new GsonBuilder().disableHtmlEscaping()
-                .registerTypeHierarchyAdapter(Identifier.class, new Identifier.Serializer())
-
                 .registerTypeHierarchyAdapter(Item.class, new RegistrySerializer<>(Registries.ITEM))
                 .registerTypeHierarchyAdapter(Block.class, new RegistrySerializer<>(Registries.BLOCK))
                 .registerTypeHierarchyAdapter(SoundEvent.class, new RegistrySerializer<>(Registries.SOUND_EVENT))
@@ -76,6 +74,7 @@ public class BaseGson {
                 .registerTypeHierarchyAdapter(PositionSourceType.class, new RegistrySerializer<>(Registries.POSITION_SOURCE_TYPE))
                 .registerTypeHierarchyAdapter(RuleTestType.class, new RegistrySerializer<>(Registries.RULE_TEST))
                 .registerTypeHierarchyAdapter(RuleBlockEntityModifier.class, new RegistrySerializer<>(Registries.RULE_BLOCK_ENTITY_MODIFIER))
+                .registerTypeHierarchyAdapter(Identifier.class, new CodecSerializer<>(Identifier.CODEC))
                 .registerTypeHierarchyAdapter(Text.class, new CodecSerializer<>(TextCodecs.CODEC))
                 .registerTypeHierarchyAdapter(Style.class, new CodecSerializer<>(Style.Codecs.CODEC))
                 .registerTypeHierarchyAdapter(ItemStack.class, new CodecSerializer<>(ItemStack.CODEC))
