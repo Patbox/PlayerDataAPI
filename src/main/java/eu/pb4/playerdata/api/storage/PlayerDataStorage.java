@@ -8,13 +8,13 @@ import java.util.UUID;
 
 public interface PlayerDataStorage<T> {
     default boolean save(ServerPlayerEntity player, T settings) {
-        return this.save(player.server, player.getUuid(), settings);
+        return this.save(player.getServer(), player.getUuid(), settings);
     }
     boolean save(MinecraftServer server, UUID player, T settings);
 
     @Nullable
     default T load(ServerPlayerEntity player) {
-        return this.load(player.server, player.getUuid());
+        return this.load(player.getServer(), player.getUuid());
     }
     @Nullable
     T load(MinecraftServer server, UUID player);
