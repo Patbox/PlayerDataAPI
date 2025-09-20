@@ -88,7 +88,7 @@ public class BaseGson {
                 .registerTypeHierarchyAdapter(AxisAngle4f.class, new CodecSerializer<>(Codecs.AXIS_ANGLE_4F))
                 .registerTypeHierarchyAdapter(Matrix4f.class, new CodecSerializer<>(Codecs.MATRIX_4F))
                 .registerTypeHierarchyAdapter(BitSet.class, new CodecSerializer<>(Codecs.BIT_SET))
-                .registerTypeHierarchyAdapter(GameProfile.class, new CodecSerializer<>(Codecs.GAME_PROFILE_WITH_PROPERTIES))
+                .registerTypeHierarchyAdapter(GameProfile.class, new CodecSerializer<>(Codecs.GAME_PROFILE_CODEC))
 
                 .registerTypeAdapter(new TypeToken<RegistryEntry<Enchantment>>() {}.getType(), new CodecSerializer<>(Enchantment.ENTRY_CODEC))
                 .registerTypeAdapter(new TypeToken<RegistryEntry<Biome>>() {}.getType(), new CodecSerializer<>(Biome.REGISTRY_CODEC))

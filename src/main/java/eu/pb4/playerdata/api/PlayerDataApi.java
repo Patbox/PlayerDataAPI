@@ -88,11 +88,11 @@ public final class PlayerDataApi {
 
     @Nullable
     public static <T> T getCustomDataFor(ServerPlayerEntity player, PlayerDataStorage<T> storage) {
-        return getCustomDataFor(Objects.requireNonNull(player.getServer()), player.getUuid(), storage);
+        return getCustomDataFor(Objects.requireNonNull(player.getEntityWorld().getServer()), player.getUuid(), storage);
     }
 
     public static <T> void setCustomDataFor(ServerPlayerEntity player, PlayerDataStorage<T> storage, T value) {
-        setCustomDataFor(Objects.requireNonNull(player.getServer()), player.getUuid(), storage, value);
+        setCustomDataFor(Objects.requireNonNull(player.getEntityWorld().getServer()), player.getUuid(), storage, value);
     }
 
     @Nullable
@@ -121,7 +121,7 @@ public final class PlayerDataApi {
     }
 
     public static Path getPathFor(ServerPlayerEntity player) {
-        return getPathFor(Objects.requireNonNull(player.getServer()), player.getUuid());
+        return getPathFor(Objects.requireNonNull(player.getEntityWorld().getServer()), player.getUuid());
     }
 
     public static Path getPathFor(MinecraftServer server, UUID uuid) {
