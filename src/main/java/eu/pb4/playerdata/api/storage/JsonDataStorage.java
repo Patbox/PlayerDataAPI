@@ -43,7 +43,7 @@ public record JsonDataStorage<T>(String path, Class<T> clazz, Gson gson) impleme
 
         try {
             Files.createDirectories(path);
-            BaseGson.withRegistries(server.getRegistryManager());
+            BaseGson.withRegistries(server.registryAccess());
             Files.writeString(path.resolve(this.path + ".json"), this.gson.toJson(settings), StandardCharsets.UTF_8);
             BaseGson.withRegistries(null);
             return true;
@@ -63,7 +63,7 @@ public record JsonDataStorage<T>(String path, Class<T> clazz, Gson gson) impleme
             }
 
             String json = Files.readString(path, StandardCharsets.UTF_8);
-            BaseGson.withRegistries(server.getRegistryManager());
+            BaseGson.withRegistries(server.registryAccess());
             var ret = this.gson.fromJson(json, this.clazz);
             BaseGson.withRegistries(null);
             return ret;

@@ -6,30 +6,28 @@ import eu.pb4.playerdata.api.storage.JsonDataStorage;
 import eu.pb4.playerdata.api.storage.PlayerDataStorage;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtString;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 public class TestMod implements ModInitializer {
     public static final PlayerDataStorage<TestClass> DATA_STORAGE = new JsonDataStorage<>("test_gson", TestClass.class);
 
-    private static int test(CommandContext<ServerCommandSource> objectCommandContext) {
+    private static int test(CommandContext<CommandSourceStack> objectCommandContext) {
         try {
-            ServerPlayerEntity player = objectCommandContext.getSource().getPlayer();
+            ServerPlayer player = objectCommandContext.getSource().getPlayer();
 
             var testObj = new TestClass();
             testObj.testString = "Hello Custom World " + Math.random() * 100;
-            testObj.position = player.getPos();
-            testObj.itemStack = player.getMainHandStack();
-            testObj.item = player.getMainHandStack().getItem();
+            testObj.position = player.position();
+            testObj.itemStack = player.getMainHandItem();
+            testObj.item = player.getMainHandItem().getItem();
             testObj.text = player.getDisplayName();
-            testObj.id = Identifier.of("test:hello");
+            testObj.id = Identifier.tryParse("test:hello");
             PlayerDataApi.setCustomDataFor(player, DATA_STORAGE, testObj);
 
 
@@ -39,16 +37,16 @@ public class TestMod implements ModInitializer {
         return 0;
     }
 
-    private static int test2(CommandContext<ServerCommandSource> objectCommandContext) {
+    private static int test2(CommandContext<CommandSourceStack> objectCommandContext) {
         try {
-            ServerPlayerEntity player = objectCommandContext.getSource().getPlayer();
+            ServerPlayer player = objectCommandContext.getSource().getPlayer();
             var data = PlayerDataApi.getCustomDataFor(player, DATA_STORAGE);
-            player.sendMessage(Text.literal(data.testString), false);
-            player.sendMessage(Text.literal(data.position.toString()), false);
-            player.sendMessage(Text.literal(data.itemStack.toString()), false);
-            player.sendMessage(Text.literal(data.item.toString()), false);
-            player.sendMessage(data.text, false);
-            player.sendMessage(Text.literal(data.id.toString()), false);
+            player.sendSystemMessage(Component.literal(data.testString), false);
+            player.sendSystemMessage(Component.literal(data.position.toString()), false);
+            player.sendSystemMessage(Component.literal(data.itemStack.toString()), false);
+            player.sendSystemMessage(Component.literal(data.item.toString()), false);
+            player.sendSystemMessage(data.text, false);
+            player.sendSystemMessage(Component.literal(data.id.toString()), false);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,21 +54,21 @@ public class TestMod implements ModInitializer {
         return 0;
     }
 
-    private static int test3(CommandContext<ServerCommandSource> objectCommandContext) {
+    private static int test3(CommandContext<CommandSourceStack> objectCommandContext) {
         try {
-            ServerPlayerEntity player = objectCommandContext.getSource().getPlayer();
-            PlayerDataApi.setGlobalDataFor(player, Identifier.of("test"), NbtString.of("Hello Global World! " + Math.random() * 100));
+            ServerPlayer player = objectCommandContext.getSource().getPlayer();
+            PlayerDataApi.setGlobalDataFor(player, Identifier.tryParse("test"), StringTag.valueOf("Hello Global World! " + Math.random() * 100));
         } catch (Exception e) {
             e.printStackTrace();
         }
         return 0;
     }
 
-    private static int test4(CommandContext<ServerCommandSource> objectCommandContext) {
+    private static int test4(CommandContext<CommandSourceStack> objectCommandContext) {
         try {
-            ServerPlayerEntity player = objectCommandContext.getSource().getPlayer();
-            NbtElement element = PlayerDataApi.getGlobalDataFor(player, Identifier.of("test"));
-            player.sendMessage(Text.literal(element.toString()), false);
+            ServerPlayer player = objectCommandContext.getSource().getPlayer();
+            var element = PlayerDataApi.getGlobalDataFor(player, Identifier.tryParse("test"));
+            player.sendSystemMessage(Component.literal(element.toString()), false);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -79,6 +77,7 @@ public class TestMod implements ModInitializer {
 
     public void onInitialize() {
         PlayerDataApi.register(DATA_STORAGE);
+
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(

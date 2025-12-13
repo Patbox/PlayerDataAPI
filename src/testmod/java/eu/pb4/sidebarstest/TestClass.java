@@ -1,17 +1,18 @@
 package eu.pb4.sidebarstest;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 public class TestClass {
     public String testString = "";
-    public Vec3d position = Vec3d.ZERO;
+    public Vec3 position = Vec3.ZERO;
     public ItemStack itemStack = ItemStack.EMPTY;
     public Item item = Items.AIR;
-    public Text text = Text.empty();
-    public Identifier id = Identifier.of("default");
+    public Component text = Component.empty();
+    public Identifier id = Identifier.tryParse("default");
 }

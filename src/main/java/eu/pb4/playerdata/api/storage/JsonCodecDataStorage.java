@@ -31,7 +31,7 @@ public record JsonCodecDataStorage<T>(String path, Codec<T> codec) implements Pl
         try {
             Files.createDirectories(path);
 
-            var value = this.codec.encodeStart(server.getRegistryManager().getOps(JsonOps.INSTANCE), settings).result().get();
+            var value = this.codec.encodeStart(server.registryAccess().createSerializationContext(JsonOps.INSTANCE), settings).result().get();
             Files.writeString(path.resolve(this.path + ".json"), value.toString(), StandardCharsets.UTF_8);
             return true;
         } catch (Exception e) {
@@ -50,7 +50,7 @@ public record JsonCodecDataStorage<T>(String path, Codec<T> codec) implements Pl
             }
             var element = JsonParser.parseString(Files.readString(path, StandardCharsets.UTF_8));
 
-            return this.codec.decode(server.getRegistryManager().getOps(JsonOps.INSTANCE), element).result().map(Pair::getFirst).orElse(null);
+            return this.codec.decode(server.registryAccess().createSerializationContext(JsonOps.INSTANCE), element).result().map(Pair::getFirst).orElse(null);
         } catch (Exception e) {
             PMI.LOGGER.error(String.format("Couldn't load player data of %s for path %s", player, this.path));
             e.printStackTrace();

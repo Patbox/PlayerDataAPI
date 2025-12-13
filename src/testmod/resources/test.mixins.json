@@ -4,7 +4,6 @@
   "package": "eu.pb4.sidebarstest.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "StyleAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

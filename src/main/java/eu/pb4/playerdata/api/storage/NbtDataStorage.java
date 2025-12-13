@@ -2,19 +2,19 @@ package eu.pb4.playerdata.api.storage;
 
 import eu.pb4.playerdata.api.PlayerDataApi;
 import eu.pb4.playerdata.impl.PMI;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtSizeTracker;
 import net.minecraft.server.MinecraftServer;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
 
-public record NbtDataStorage(String path) implements PlayerDataStorage<NbtCompound> {
+public record NbtDataStorage(String path) implements PlayerDataStorage<CompoundTag> {
 
     @Override
-    public boolean save(MinecraftServer server, UUID player, NbtCompound settings) {
+    public boolean save(MinecraftServer server, UUID player, CompoundTag settings) {
         Path path = PlayerDataApi.getPathFor(server, player);
 
         if (settings == null) {
@@ -37,14 +37,14 @@ public record NbtDataStorage(String path) implements PlayerDataStorage<NbtCompou
     }
 
     @Override
-    public NbtCompound load(MinecraftServer server, UUID player) {
+    public CompoundTag load(MinecraftServer server, UUID player) {
         try {
             Path path = PlayerDataApi.getPathFor(server, player).resolve(this.path + ".dat");
             if (!Files.exists(path)) {
                 return null;
             }
 
-            return NbtIo.readCompressed(path, NbtSizeTracker.ofUnlimitedBytes());
+            return NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
         } catch (Exception e) {
             PMI.LOGGER.error(String.format("Couldn't load player data of %s for path %s", player, this.path));
             e.printStackTrace();

@@ -4,10 +4,6 @@ import eu.pb4.playerdata.impl.PMI;
 import eu.pb4.playerdata.api.PlayerDataApi;
 import eu.pb4.playerdata.api.storage.PlayerDataStorage;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.network.ClientConnection;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.server.network.ConnectedClientData;
-import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,14 +12,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.network.Connection;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.CommonListenerCookie;
+import net.minecraft.server.players.PlayerList;
 
-@Mixin(value = PlayerManager.class, priority = 500)
-public class PlayerManagerMixin implements PMI {
+@Mixin(value = PlayerList.class, priority = 500)
+public class PlayerListMixin implements PMI {
     @Unique
     private final Map<UUID, Map<PlayerDataStorage<Object>, Object>> pda_playerDataMap = new Object2ObjectOpenHashMap<>();
 
-    @Inject(method = "onPlayerConnect", at = @At("HEAD"))
-    private void loadData(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
+    @Inject(method = "placeNewPlayer", at = @At("HEAD"))
+    private void loadData(Connection connection, ServerPlayer player, CommonListenerCookie clientData, CallbackInfo ci) {
         var map = new Object2ObjectOpenHashMap<PlayerDataStorage<Object>, Object>();
         for (PlayerDataStorage<?> storage : PlayerDataApi.getDataStorageSet()) {
             try {
@@ -32,12 +32,12 @@ public class PlayerManagerMixin implements PMI {
                 e.printStackTrace();
             }
         }
-        this.pda_playerDataMap.put(player.getUuid(), map);
+        this.pda_playerDataMap.put(player.getUUID(), map);
     }
 
-    @Inject(method = "savePlayerData", at = @At("HEAD"))
-    private void pda_saveData(ServerPlayerEntity player, CallbackInfo ci) {
-        var map = this.pda_playerDataMap.get(player.getUuid());
+    @Inject(method = "save", at = @At("HEAD"))
+    private void pda_saveData(ServerPlayer player, CallbackInfo ci) {
+        var map = this.pda_playerDataMap.get(player.getUUID());
         if (map != null) {
             for (var entry : map.entrySet()) {
                 try {
@@ -50,8 +50,8 @@ public class PlayerManagerMixin implements PMI {
     }
 
     @Inject(method = "remove", at = @At("TAIL"))
-    private void pda_dontHoldOfflineData(ServerPlayerEntity player, CallbackInfo ci) {
-        this.pda_playerDataMap.remove(player.getUuid());
+    private void pda_dontHoldOfflineData(ServerPlayer player, CallbackInfo ci) {
+        this.pda_playerDataMap.remove(player.getUUID());
     }
 
     @Override

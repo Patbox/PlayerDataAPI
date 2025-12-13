@@ -4,7 +4,7 @@
   "package": "eu.pb4.playerdata.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "PlayerManagerMixin"
+    "PlayerListMixin"
   ],
   "injectors": {
     "defaultRequire": 1
