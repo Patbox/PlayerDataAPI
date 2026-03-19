@@ -125,6 +125,8 @@ public final class PlayerDataApi {
     }
 
     public static Path getPathFor(MinecraftServer server, UUID uuid) {
-        return server.getWorldPath(LevelResource.ROOT).resolve("player-mod-data").resolve(uuid.toString());
+        //return server.getWorldPath(LevelResource.ROOT).resolve("player-mod-data").resolve(uuid.toString());
+        return server.getWorldPath(LevelResource.ROOT).resolve("players")
+                .resolve("mod_data").resolve(uuid.toString());
     }
 }

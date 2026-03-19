@@ -2,9 +2,10 @@
   "required": true,
   "minVersion": "0.8",
   "package": "eu.pb4.playerdata.mixin",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "PlayerListMixin"
+    "PlayerListMixin",
+    "PlayerStorageFileFixMixin"
   ],
   "injectors": {
     "defaultRequire": 1
