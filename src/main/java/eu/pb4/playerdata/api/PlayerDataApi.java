@@ -99,7 +99,8 @@ public final class PlayerDataApi {
     public static <T> T getCustomDataFor(MinecraftServer server, UUID uuid, PlayerDataStorage<T> storage) {
         var pmi = ((PMI) server.getPlayerList());
 
-        if (pmi.pda_isStored(uuid)) {
+        //noinspection ConstantValue
+        if (pmi != null && pmi.pda_isStored(uuid)) {
             return pmi.pda_getStorageValue(uuid, storage);
         } else {
             return storage.load(server, uuid);
@@ -109,7 +110,8 @@ public final class PlayerDataApi {
     public static <T> void setCustomDataFor(MinecraftServer server, UUID uuid, PlayerDataStorage<T> storage, T value) {
         var pmi = ((PMI) server.getPlayerList());
 
-        if (pmi.pda_isStored(uuid)) {
+        //noinspection ConstantValue
+        if (pmi != null && pmi.pda_isStored(uuid)) {
             pmi.pda_setStorageValue(uuid, storage, value);
         } else {
             storage.save(server, uuid, value);
